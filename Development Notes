@@ -1,0 +1,24 @@
+HWSURFACE and DOUBLEBUF
+Double-buffering, as the description for the tag mentions, is using a separate block of memory to apply all the draw routines and then copying that block (buffer) to video memory as a single operation. Failure to do this can lead to graphical artifacts. A simple example could be flickering of the scene caused by part of background being drawn right before the video refreshes and then other parts afterwards (so they aren't shown until the next refresh).
+
+Hardware surface refers to using memory on the video card ("hardware") for storing draws as opposed to main memory ("software"). The main reason for this is that the bandwidth between main memory and video memory tends to be slow and so being able to draw directly can speed this up. SDL (which PyGame is built on top of) was originally developed to support older video cards which didn't support hardware surfaces and so you have to request extra features to see if your hardware can take advantage of them. At this point in time, my understanding is that pretty much any video card (even on board ones on low end laptops made within the last couple of years (or even things like the Raspberry Pi but I'd need to check it) should support DOUBLEBUF and HWSURFACE. You may want to check the SDL documentation to see if that provides any additional details you need
+
+Inefficient Tilemapping. Dropped FPS
+
+map_data=[]
+
+for x in range(10):
+    for y in range(6):
+        map_data.append((x,y,"1"))
+for x in range(10,15):
+    for y in range(6,10):
+        map_data.append((x,y,"2"))
+
+    #Render Simple Terrain Grid
+    for x in range(0, 640, Tiles.Size):
+        for y in range(0, 480, Tiles.Size):
+            #window.blit(Tiles.grass, (x + Globals.cam_x,y + Globals.cam_y))
+            for i in map_data:
+                tile = (i[0]* Tiles.Size, i[1] * Tiles.Size)
+                if (x, y) == tile:
+                    window.blit(Tiles.Tilesets[i[2]], (x + Globals.cam_x, y + Globals.cam_y))
